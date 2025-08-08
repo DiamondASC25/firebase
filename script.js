@@ -13,7 +13,13 @@ const database = firebase.database().ref();
 const allMessages = document.getElementById("all-messages");
 const usernameInput = document.getElementById("username");
 const messageInput = document.getElementById("message");
+const emailInput = document.getElementById("email");
 const sendButton = document.getElementById("send-btn");
+
+const imageInputs = document.getElementById("profile");
+
+
+
 
 sendButton.onclick = updateDB;
 /**
@@ -30,18 +36,38 @@ sendButton.onclick = updateDB;
 function updateDB(event) {
   event.preventDefault();
 
+  let date = new Date();
+  const dateTxt = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear();
+  const timeTxt = date.getHours() +":" + date.getMinutes() + ":" + date.getSeconds();
+
+
   console.log(usernameInput.value);
   console.log(messageInput.value);
+  console.log(dateTxt);
+  console.log(timeTxt);
+  console.log(imageInputs);
 
-  let data = {
+  // if(usernameInput.value == ""){
+  //   alert("You must give me a username");
+  // }
+  // else if(emailInput.value == ""){
+  //   alert("You must give me an email");
+  // }
+  // else if(messageInput.value == ""){
+  //   alert("You must give me a mesage");
+  // }else{
+    let data = {
     "username": usernameInput.value,
-    "message": messageInput.value
-  };
+    "email": emailInput.value,
+    "message": messageInput.value,
+    "date": dateTxt,
+    "time": timeTxt,
+    "image": imageInputs.value,
+    };
 
-  console.log(data);
-  database.push(data);
-
-  messageInput.value = "";
+    console.log(data);
+    database.push(data);
+    messageInput.value = "";
 
   // Prevent default refresh
   // Create data object
@@ -49,6 +75,7 @@ function updateDB(event) {
   // GET *PUSH* PUT DELETE
   // Write to our database
   // Reset message
+  
 }
 
 /**
@@ -73,7 +100,7 @@ function addMessageToBoard(rowData) {
   console.log(data);
   // Store the value of rowData inside object named 'data'
   // console.log data
-  let singleMessage = makeSingleMessageHTML(data.username, data.message);
+  let singleMessage = makeSingleMessageHTML(data.username, data.email, data.message, data.date, data.time, data.image);
   // Create a variable named singleMessage
   // that stores function call for makeSingleMessageHTML()
   // Append the new message HTML element to allMessages
@@ -98,7 +125,8 @@ function addMessageToBoard(rowData) {
  *      - returns the parent div
  */
 
-function makeSingleMessageHTML(usernameTxt, messageTxt) {
+function makeSingleMessageHTML(usernameTxt, emailTxt, messageTxt, dateTxt, timeTxt, imageSRC) {
+  console.log("Date:", dateTxt, "Time:", timeTxt);
   // Create Parent Div
   let parentDiv = document.createElement("div");
   parentDiv.className = "single-message";
@@ -108,11 +136,33 @@ function makeSingleMessageHTML(usernameTxt, messageTxt) {
   usernameP.className = "single-message-username";
   usernameP.innerHTML = usernameTxt;
 
+  let emailP = document.createElement("p");
+  emailP.className = "single-message-email";
+  emailP.innerHTML = emailTxt;
+
   let messageP = document.createElement("p");
   messageP.innerHTML = messageTxt;
+
+  let dateP = document.createElement("p");
   
+  dateP.className = "single-message-date";
+  dateP.innerHTML = dateTxt;
+
+  let timeP = document.createElement("p");
+  timeP.className = "single-message-time";
+  timeP.innerHTML = timeTxt;
+
+  let image = document.createElement("img");
+  image.className = "single-message-img";
+  image.src = imageSRC;
+  
+  parentDiv.append(image);
   parentDiv.append(usernameP);
+  parentDiv.append(emailP);
   parentDiv.append(messageP);
+  parentDiv.append(dateP);
+  parentDiv.append(timeP);
+  
   
   // Append username
   // Create message P Tag
